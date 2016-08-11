@@ -209,9 +209,9 @@ class PaymentMethod extends \Magento\Payment\Model\Method\AbstractMethod
 
             $request = $this->getPostData();
 
-            $payment_id = $request['paymentMethod']['additional_data']['rzp_payment_id'];
+            $paymentId = $request['paymentMethod']['additional_data']['rzp_payment_id'];
 
-            $txn = $this->rzp->payment->fetch($payment_id);
+            $txn = $this->rzp->payment->fetch($paymentId);
 
             $_preparedamount = $amount*100; // Converting to basic price entity
 
@@ -222,12 +222,12 @@ class PaymentMethod extends \Magento\Payment\Model\Method\AbstractMethod
             if (isset($result['error']) === false) {
                 $payment->setStatus(self::STATUS_APPROVED)
                     ->setAmountPaid($amount)
-                    ->setLastTransId($payment_id)
-                    ->setTransactionId($payment_id)
+                    ->setLastTransId($paymentId)
+                    ->setTransactionId($paymentId)
                     ->setIsTransactionClosed(true)
                     ->setShouldCloseParentTransaction(true);
             } else {
-                throw new LocalizedException($result['error']['description']);
+                throw new LocalizedException(__($result['error']['description']));
             }
         } catch (\Exception $e) {
             $this->_logger->critical($e);
